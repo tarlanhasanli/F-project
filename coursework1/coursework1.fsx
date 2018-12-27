@@ -1,8 +1,6 @@
 // 1. Associate an identifier "myFirstList" with an empty list of booleans.
 
-
-
-
+let myFirstList = [] : bool list
 
 // 2. Define a function
 //
