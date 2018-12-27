@@ -90,14 +90,16 @@ let rec bornLaterThan y (xs:Artist list) =
 //
 // The function must preserve duplicates.
 
+let country (_,_,_,country) = country
 
-
-
-
-
-
-
-
+let rec artistsFrom c (xs:Artist list) =
+    match xs with
+        | []           -> []
+        | head :: tail -> 
+            if (country head) = c then
+                head :: artistsFrom c tail
+            else
+                artistsFrom c tail
 
 // 6. Define a function
 //                          
