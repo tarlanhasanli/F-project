@@ -112,15 +112,12 @@ let rec artistsFrom c (xs:Artist list) =
 // The element at index i in 'names xs' must be the name of the
 // artist at index i in 'xs'.
 
+let name (name,_,_,_) = name
 
-
-
-
-
-
-
-
-
+let rec names (xs:Artist list) =
+    match xs with
+        | []           -> [] : string list
+        | head :: tail -> name head :: names tail
 
 // 7. Using your solutions to previous exercises define a function
 //    
