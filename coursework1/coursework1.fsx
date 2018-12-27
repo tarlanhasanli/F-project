@@ -49,13 +49,11 @@ type Artist = (string * int * bool * string)
 //
 // You can use this list in the following exercises to test your code.
 
-
-
-
-
-
-
-
+let artists = [("Eminem", 1972, true, "USA"); 
+          ("Freddie Mercury", 1946, false, "Tanzania");
+          ("The Weeknd", 1990, true, "Canada");
+          ("50 Cent", 1975, true, "USA");
+          ("Drake", 1986, true, "Canada")] : Artist list
 
 // 4. Define a function
 //
