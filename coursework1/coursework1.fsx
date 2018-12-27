@@ -128,3 +128,4 @@ let rec names (xs:Artist list) =
 //
 // This should be a one-line definition.
 
+let areFromAndBornLaterThan c y xs = artistsFrom c xs |> bornLaterThan y |> names
