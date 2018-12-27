@@ -20,11 +20,14 @@ let myFirstList = [] : bool list
 // When you have completed this definition then think about the time complexity
 // of your implementation.
 
-
-
-
-
-
+let rec elem i xs =
+    if i < 0 then failwith "index cannot be less than 0"
+    else 
+        match xs with
+        | []           -> failwith "index out of bound"
+        | head :: tail -> 
+            if i = 0 then head
+            else elem (i - 1) tail
 
 // Here is a type synonym for a tuple for representing information about artists.
 
