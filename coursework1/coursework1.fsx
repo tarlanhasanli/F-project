@@ -67,15 +67,16 @@ let artists = [("Eminem", 1972, true, "USA");
 //
 // The function must preserve duplicates.
 
+let year (_,year,_,_) = year
 
-
-
-
-
-
-
-
-
+let rec bornLaterThan y (xs:Artist list) =
+    match xs with
+        | []           -> []
+        | head :: tail -> 
+            if (year head) > y then
+                head :: bornLaterThan y tail
+            else
+                bornLaterThan y tail
 
 // 5. Define a function
 //                        
