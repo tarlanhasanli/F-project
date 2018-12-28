@@ -46,9 +46,10 @@ let rec compareLists (first:string list) (second:string list) =
 // that takes two instances of bibliography items and compares them according to the authors.
 // Use solution from task 3.
 
+let author (a,_,_,_) = a
 
-
-
+let compareAuthors (x:BibliographyItem) (y:BibliographyItem) = 
+    compareLists (author x) (author y)
 
 // 5. Make a function
 // compareAuthorsYears : BibliographyItem -> BibliographyItem -> int
