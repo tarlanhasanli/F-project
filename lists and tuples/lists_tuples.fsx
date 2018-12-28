@@ -56,10 +56,19 @@ let compareAuthors (x:BibliographyItem) (y:BibliographyItem) =
 // that takes two instances of bibliography items and compares them according to the authors 
 // and if the authors are the same then according to years.
 
+let year (_,_,_,y) = y
 
-
-
-
+let compareAuthorsYears (x:BibliographyItem) (y:BibliographyItem) = 
+    let res = compareAuthors x y 
+    if res = 0 then 
+        if year x < year y then
+            -1
+        else 
+            if year x > year y then
+                1
+            else 
+            0
+    else res
 
 // 6. Make a function 
 // sortBibliographyByYear : BibliographyItem list -> BibliographyItem list
