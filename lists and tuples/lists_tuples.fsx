@@ -74,18 +74,18 @@ let compareAuthorsYears (x:BibliographyItem) (y:BibliographyItem) =
 // sortBibliographyByYear : BibliographyItem list -> BibliographyItem list
 // That returns a bibliography sorted according to the year in ascending order
 
-
-
-
+let sortBibliographyByYear (x:BibliographyItem list) =
+    x |> List.sortBy(fun e -> year e)
 
 // 7. Make a function 
 // sortBibliographyByAuthorYear : BibliographyItem list -> BibliographyItem list
 // That returns a bibliography sorted according to the authors and year in ascending order
 
+let sortBibliographyByAuthor (x:BibliographyItem list) =
+    x |> List.sortBy(fun e -> author e)
 
-
-
-
+let sortBibliographyByAuthorYear (x:BibliographyItem list) =
+    x |> sortBibliographyByYear |> sortBibliographyByAuthor
 
 // 8. Make a function
 // groupByAuthor : BibliographyItem list -> (string * BibliographyItem list) list
