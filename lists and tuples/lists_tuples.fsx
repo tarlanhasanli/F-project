@@ -7,15 +7,19 @@
 // * The third field represents a pair containing the starting page number and ending page number of the paper.
 // * The fourth field represents the year of publication
 
-
-
+type BibliographyItem = string list * string * (int * int) * int
 
 // 2. Create a value bibliographyData : BibliographyItem list that contains
 // at least 7 different publications on your favourite topic from https://dblp.uni-trier.de/ 
 // Please note that you need not read the papers, just pick 7 papers that sound interesting to you from the database.
 
-
-
+let bibliographyData = [(["Peter, Tolstrup Aagesen"; "Clint, Heyer"],"Personality of Interaction: Expressing Brand Personalities Through Interaction Aesthetics",(3126, 3130),2016);
+    (["	Harikrishna, Veldandi"; "Shaik, Rafi Aahmed"],"Design procedure for multifinger MOSFET two-stage OTA with shallow trench isolation effect",(513, 522),2018);
+    (["Marie, Kirstejn Aakjær"; "Eva, Brandt"],"Social innovation within prison service",(101, 104),2012);
+    (["Peter, Edward Aackermann"; "Peter, Juhler Dinesen Pedersen"; "Allan, Peter Engsig-Karup"; "Thomas, Clausen"; "Jesper, Grooss"], "Development of a GPU-Accelerated Mike 21 Solver for Water Wave Dynamics", (129, 130), 2012);
+    (["IJsbrand, Jan Aalbersberg"; "Pilar, Cos Alvarez"; "Julien, Jomier"; "Charles, Marion"; "Elena, V. Zudilova-Seinstra"], "Bringing 3D visualization into the online research article", (27, 37), 2014);
+    (["Maria, Stella Iacobucci"; "Fabio, Graziosia"; "Panfilo, Ventresca"], "Quality of Service Performances in Ad Hoc IEEE 802.11 Wireless LANs", (160, 165), 2004);
+    (["Michal, Gaziel Yablowitz"; "David, G. Schwartz"], "A Review and Assessment Framework for Mobile-Based Emergency Intervention Apps", (1, 32), 2018)] : BibliographyItem list
 
 // 3. Make a function compareLists : string list -> string list -> int that takes two string lists and
 // returns 
