@@ -31,8 +31,15 @@ let bibliographyData = [(["Peter, Tolstrup Aagesen"; "Clint, Heyer"],"Personalit
 // A missing author can be considered to be equivalent to an empty string.
 // Please note that your implementation should be recursive over the input lists.
 
-
-
+let rec compareLists (first:string list) (second:string list) =
+    match first, second with
+    | [], [] -> 0
+    | [], _  -> -1
+    | _, []  -> 1
+    | hf::tf, hs::ts -> match compare hf hs with
+        | t when t > 0 -> 1
+        | 0 -> compareLists tf ts
+        | _ -> -1
         
 // 4. Make a function
 // compareAuthors : BibliographyItem -> BibliographyItem -> int
