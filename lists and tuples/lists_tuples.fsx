@@ -92,6 +92,20 @@ let sortBibliographyByAuthorYear (x:BibliographyItem list) =
 // where the return list contains pairs where the first element is the name of a single
 // author and the second element a list of bibliography items that the author has co-authored.
 
+let rec uniqueAuthor (x:BibliographyItem list) = 
+    let authors = match x with
+    | [] -> []
+    | hd::tl -> (author hd)@(uniqueAuthor tl)
+    authors |> Seq.distinct |> List.ofSeq // this part from https://bit.ly/2zFQkE0
 
+let rec getAuthorBibliography (x:BibliographyItem list) (y:string) =
+    x |> List.filter(fun e -> List.contains y (author e) = true)
 
-
+let rec zip (xs:string list) (x:BibliographyItem list) =
+   match xs with
+   | [] -> []
+   | hd :: tl -> (hd, (getAuthorBibliography x hd)) :: zip tl x
+    
+let groupByAuthor (x:BibliographyItem list) =
+    let authors = uniqueAuthor x
+    zip authors x
