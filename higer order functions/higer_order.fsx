@@ -92,6 +92,12 @@ let pairsToEmpty y =
 //
 // Use List.collect
 
+let replicateCells y =
+    y |> List.collect(fun e -> 
+    match e with
+    | Empty       -> []
+    | Value v     -> [for _ in 1 .. (max 0 v) -> Value v]
+    | Pair (x, y) -> [for _ in 1 .. (max 0 (x+y)) -> Pair(x, y)])
 
 // 7. Define a function
 //
@@ -101,6 +107,11 @@ let pairsToEmpty y =
 //
 // Use List.collect.
     
+let flattenPairs y =
+    y |> List.collect(fun e ->
+    match e with
+    | Pair(x, y) -> [Value x; Value y]
+    | k          -> [k])
 
 // 8. Define a function
 //
