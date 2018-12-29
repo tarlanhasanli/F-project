@@ -30,9 +30,9 @@ let noEmptyCells x =
 let filterGreaterThan n y = 
     y |> noEmptyCells |> List.filter(fun e ->
      match e with 
-        | Value v when v > n              -> true
-        | Pair (x, y) when x > n || y > n -> true
-        | _                               -> false)
+    | Value v when v > n              -> true
+    | Pair (x, y) when x > n || y > n -> true
+    | _                               -> false)
 
 // 3. Define a function
 //
@@ -44,6 +44,12 @@ let filterGreaterThan n y =
 //
 // Use List.map
 
+let increaseCells n y = 
+    y |> List.map(fun e -> 
+    match e with 
+    | Value v     -> Value (v + n)
+    | Pair (x, z) -> Pair (x + n, z + n)
+    | Empty       -> Empty)
 
 // 4. Define a function
 //
@@ -56,13 +62,24 @@ let filterGreaterThan n y =
 //
 // Use List.map
 
+let transformPairs f y =
+    y |> List.map(fun e -> 
+    match e with
+    | Pair (x, y) -> f x y
+    | x           -> x) 
 
 // 5. Define a function
 //
 // pairsToEmpty : Cell list -> Cell list
 //
 // that replaces all Pairs with Empty cells.
-    
+
+
+let pairsToEmpty y = 
+    y |> List.map(fun e -> 
+    match e with
+    | Pair _ -> Empty
+    | x      -> x) 
 
 // 6. Define a function
 //
