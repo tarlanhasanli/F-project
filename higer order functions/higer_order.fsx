@@ -29,7 +29,7 @@ let noEmptyCells x =
 
 let filterGreaterThan n y = 
     y |> noEmptyCells |> List.filter(fun e ->
-     match e with 
+    match e with 
     | Value v when v > n              -> true
     | Pair (x, y) when x > n || y > n -> true
     | _                               -> false)
@@ -125,7 +125,13 @@ let flattenPairs y =
 // 3 is the number of Pair  cells
 //
 // Use List.fold
-    
+
+let countCells y =
+    y |> List.fold(fun acc e ->
+    match acc, e with 
+    | (a, b, c), Empty       -> (a+1, b, c)
+    | (a, b, c), Value _     -> (a, b+1, c)
+    | (a, b, c), Pair _      -> (a, b, c+1)) (0, 0, 0)  
 
 // 9. Define a function
 //
@@ -142,3 +148,10 @@ let flattenPairs y =
 // You can convert an int to a string by the function 'string'.
 //
 // Use List.fold
+
+let cellsToString y = 
+    y |> List.fold(fun acc e ->
+    match e with
+    | Empty       -> acc + "." + "|"
+    | Value v     -> acc + string v + "|"
+    | Pair (x, y) -> acc + string x + "," + string y + "|") "|"
