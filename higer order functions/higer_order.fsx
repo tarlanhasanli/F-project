@@ -12,6 +12,9 @@ type Cell = Empty | Value of int | Pair of (int * int)
 // Use List.filter
 
 
+let noEmptyCells x = 
+    x |> List.filter(fun e -> e <> Empty)
+
 // 2. Define a function
 //
 // filterGreaterThan : int -> Cell list -> Cell list
@@ -23,6 +26,13 @@ type Cell = Empty | Value of int | Pair of (int * int)
 //
 // Use List.filter
 
+
+let filterGreaterThan n y = 
+    y |> noEmptyCells |> List.filter(fun e ->
+     match e with 
+        | Value v when v > n              -> true
+        | Pair (x, y) when x > n || y > n -> true
+        | _                               -> false)
 
 // 3. Define a function
 //
