@@ -27,6 +27,25 @@ let rec prepend (name:string) (path:string list list) : string list list =
   | [] -> [[name]]
   | head :: tail -> (name :: head) :: prepend name tail
 
+let rec lastList (y:string list) =
+  match y with
+  | [h] -> h
+  | _::t -> lastList t
+  | [] -> failwith "List is empty"
+ 
+let rec notTraverseRead (x:string list) (y:FileSystem) =
+  match x, y with
+  | [name], hd::tl  -> 
+    match hd with 
+    | Dir (a,_,_) when a.Contains name -> true
+    | File(a,b) when (a.Contains name) && b.Contains Read -> true
+    | _ -> notTraverseRead x tl
+  | _, [] -> false
+  | root::child, Dir(a,b,c)::_ when a.Contains root && b.Contains Traverse -> notTraverseRead child c
+  | root::_, Dir(a,b,_)::_ when a.Contains root && not (b.Contains Traverse) -> false
+  | root::_, Dir(a,_,_)::t when not (a.Contains root) -> notTraverseRead x t 
+  | _, _::t -> notTraverseRead x t 
+
 // 1. Define a function
 // createEmptyFilesystem: unit -> FileSystem
 // that will be a function with 0 arguments that will return an
@@ -166,6 +185,10 @@ let rec changePermissions (perm:Permission Set) (path:string list) (fs:FileSyste
 // Note that the locate should honor the permissions, i.e. the files from
 // directories without the Read permission should not be returned and
 // directories without the Traverse permission should not be traversed further.
+
+let rec locate (x:string) (y:FileSystem) : string list list =
+  (show y) |> List.filter(fun n -> (lastList n).Contains x)
+           |> List.filter(fun n -> notTraverseRead n y)
 
 // 7. Implement the function:
 // delete : string list -> FileSystem ->FileSystem
