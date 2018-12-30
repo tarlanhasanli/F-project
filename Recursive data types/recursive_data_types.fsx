@@ -49,7 +49,14 @@ let createEmptyFilesystem () : FileSystem = []
 // be "Dir2".
 // Please note that createDirectory is expected to create all directories in the path
 // if they do not exist beforehand.
-// (Permissions are initially assumed to be Read, Write and Traverse, check task 5) 
+
+// Files can be created in a directory with Traverse and Write permissions. All of the
+// above directories must at least have the Traverse permission.
+// Directories can be created in a directory with Traverse and Write permissions. All of the
+// above directories must at least have the Traverse permission.
+// If the permissions do not allow creation of the item, the appropriate function should fail
+// with an exception and an appropriate message (that you should formulate yourself).
+// Hint: use the built-in failwith function.
 
 let rec createDirectory (path : string list) (fs : FileSystem) : FileSystem =
   match path with
@@ -78,8 +85,6 @@ let rec createDirectory (path : string list) (fs : FileSystem) : FileSystem =
 // of a string list.
 // createFile is expected to fail with exception (failwith) if the directory
 // where the file is to be created does not exist.
-// (Permissions are initially assumed to be Read and Write, check task 5) 
-
 let rec createFile (path : string list) (fs : FileSystem) : FileSystem =
     match path with
     | [fileName] when not (consistFile fs fileName) ->
@@ -137,17 +142,22 @@ let rec show (fs:FileSystem) : string list list =
 // possible to change the permissions of every file and directory regardless of their
 // previous permissions.
 
-// 6. Modify the implementations of createDirectory and createFile to honor the
-// permissions of the current file system level.
-// Files can be created in a directory with Traverse and Write permissions. All of the
-// above directories must at least have the Traverse permission.
-// Directories can be created in a directory with Traverse and Write permissions. All of the
-// above directories must at least have the Traverse permission.
-// If the permissions do not allow creation of the item, the appropriate function should fail
-// with an exception and an appropriate message (that you should formulate yourself).
-// Hint: use the built-in failwith function.
+let rec changePermissions (perm:Permission Set) (path:string list) (fs:FileSystem) : FileSystem =
+  match path with
+  | [name] ->
+    match fs with
+    | Dir(a,_,c)::tl when compare a name -> Dir(a,perm,c)::tl 
+    | File(a,_)::tl when compare a name -> File(a,perm)::tl
+    | hd::tl -> hd::(changePermissions perm path tl)
+    | [] -> failwith ("Could not find given " + path.ToString() + " in file system")
+  | hd::tail ->
+    match fs with
+    | Dir(a,b,c)::tl when compare a hd -> Dir(a,b,changePermissions perm tail c)::tl 
+    | hd::tl -> hd::(changePermissions perm path tl)
+    | [] -> failwith ("Could not find given " + path.ToString() + " in file system")
+  | [] -> failwith ("Could not find given " + path.ToString() + " in file system")
 
-// 7. Implement the function
+// 6. Implement the function
 // locate : string -> FileSystem -> string list list
 // that will locate all files and directories with name matching the first argument
 // of the function. The return value should be a list of paths to the files and
@@ -157,7 +167,7 @@ let rec show (fs:FileSystem) : string list list =
 // directories without the Read permission should not be returned and
 // directories without the Traverse permission should not be traversed further.
 
-// 8. Implement the function:
+// 7. Implement the function:
 // delete : string list -> FileSystem ->FileSystem
 // that will delete a file or directory given as the first argument from a file
 // system specified as the second argument.
