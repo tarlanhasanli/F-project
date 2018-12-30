@@ -101,6 +101,12 @@ let rec createFile (path : string list) (fs : FileSystem) : FileSystem =
 // that will recursively count the number of files in the current filesystem.
 // (countFiles should not honour permissions).
 
+let rec countFiles (fs : FileSystem) = 
+  match fs with
+  | [] -> 0
+  | File _ :: tl -> 1 + countFiles tl
+  | Dir (_, _, fileSystem) :: tl -> countFiles fileSystem + countFiles tl
+
 // 4. Define a function
 // show : FileSystem -> string list list
 // That will return a list of files and directories where
