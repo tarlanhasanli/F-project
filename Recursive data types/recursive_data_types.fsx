@@ -22,6 +22,11 @@ let rec consistFile (fs:FileSystem) (fileName:string) : bool =
   | _::tl -> consistFile tl fileName
   | [] -> false 
 
+let rec prepend (name:string) (path:string list list) : string list list =
+  match path with
+  | [] -> [[name]]
+  | head :: tail -> (name :: head) :: prepend name tail
+
 // 1. Define a function
 // createEmptyFilesystem: unit -> FileSystem
 // that will be a function with 0 arguments that will return an
@@ -115,6 +120,12 @@ let rec countFiles (fs : FileSystem) =
 // depends on the correctness of the show function.
 // The show function is expected to output a path of each file and directory
 // in the file system regardless of the permissions.
+
+let rec show (fs:FileSystem) : string list list =
+  match fs with
+  | [] -> []
+  | File (fileName, _) :: rest -> [[fileName]] @ show rest
+  | Dir (dirName, _, fileSystem) :: rest -> prepend dirName (show fileSystem) @ show rest
 
 // 5. Define a function
 // changePermissions : Permission set -> string list -> FileSystem -> FileSystem
