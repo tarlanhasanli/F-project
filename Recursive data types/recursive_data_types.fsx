@@ -44,7 +44,28 @@ let rec notTraverseRead (x:string list) (y:FileSystem) =
   | root::child, Dir(a,b,c)::_ when a.Contains root && b.Contains Traverse -> notTraverseRead child c
   | root::_, Dir(a,b,_)::_ when a.Contains root && not (b.Contains Traverse) -> false
   | root::_, Dir(a,_,_)::t when not (a.Contains root) -> notTraverseRead x t 
-  | _, _::t -> notTraverseRead x t 
+  | _, _::t -> notTraverseRead x t
+
+let rec deleteChildren (y:FileSystem) : FileSystem = 
+  match y with
+  | File(a,b)::tl -> 
+    if b.Contains Write then
+      deleteChildren tl
+    else
+      File(a,b)::deleteChildren tl
+  | Dir(a, b, c)::tl when b.Contains Traverse->
+    if b.Contains Write then
+      Dir(a, b, deleteChildren c)::deleteChildren tl
+    else
+      Dir(a, b, c)::deleteChildren tl 
+  | _ -> []
+
+let rec deleteParents (y:FileSystem) : FileSystem = 
+  match y with
+  | [] -> []
+  | Dir(_,_,[])::tl -> deleteParents tl
+  | Dir(a,b,c)::tl -> deleteParents (Dir(a,b,deleteParents c)::tl)
+  | a::tl -> a::deleteParents tl
 
 // 1. Define a function
 // createEmptyFilesystem: unit -> FileSystem
@@ -205,3 +226,9 @@ let rec locate (x:string) (y:FileSystem) : string list list =
 // Dir1, only File1 should be deleted, because deleting Dir2 would alter the 
 // directory listing of a read only directory Dir1.
 
+let rec delete (x:string list) (y:FileSystem) : FileSystem =
+  match x, y with
+  | _, [] -> []
+  | [], a -> a |> deleteChildren |> deleteParents
+  | h::t, Dir(a,b,c)::tl when compare h a && b.Contains Traverse -> Dir (a, b, delete t c)::tl 
+  | _, hd::tl -> hd::delete x tl
