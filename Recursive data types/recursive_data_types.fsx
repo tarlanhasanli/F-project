@@ -4,6 +4,18 @@ type FileSystem = Element list
 and Element = | File of string * Permission Set
               | Dir of string * Permission Set * FileSystem
 
+// helper functions
+let compare (x:string) (y:string) : bool =
+  match compare x y with
+  | 0 -> true
+  | _ -> false
+
+let rec consistDir (fs:FileSystem) (dirName:string) : bool = 
+  match fs with
+  | Dir(dir, _, _)::_ when compare dir dirName -> true
+  | _::tl -> consistDir tl dirName
+  | [] -> false
+
 // 1. Define a function
 // createEmptyFilesystem: unit -> FileSystem
 // that will be a function with 0 arguments that will return an
@@ -27,6 +39,28 @@ let createEmptyFilesystem () : FileSystem = []
 // Please note that createDirectory is expected to create all directories in the path
 // if they do not exist beforehand.
 // (Permissions are initially assumed to be Read, Write and Traverse, check task 5) 
+
+let rec createDirectory (path : string list) (fs : FileSystem) : FileSystem =
+  match path with
+    | [name] when not (consistDir fs name) ->
+      Dir(name, set [Read; Write; Traverse], createEmptyFilesystem())::fs
+    | main :: rest when (consistDir fs main) -> 
+      match fs with
+      | Dir(dirName, perm, fileSystem)::otherFs when compare dirName main ->
+        if perm.Contains Traverse then
+          if rest.Length = 1 then
+            if perm.Contains Write then 
+              Dir(dirName, perm, createDirectory rest fileSystem)::otherFs
+            else
+              failwith ("Directory " + dirName + " does not have Write permission")
+          else 
+            Dir(dirName, perm, createDirectory rest fileSystem)::otherFs
+        else
+          failwith ("Directory " + dirName + " does not have Traverse permission")
+      | hd::otherFs -> hd::createDirectory path otherFs
+      | [] -> [Dir(main, set [Read; Write; Traverse], createDirectory rest (createEmptyFilesystem()))]
+    | main :: rest -> Dir(main, set [Read; Write; Traverse], createDirectory rest (createEmptyFilesystem()))::fs
+    | []          -> fs
 
 // createFile : string list -> FileSystem -> FileSystem
 // that will create a file with the path given as the first argument in terms
