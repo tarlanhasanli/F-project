@@ -16,6 +16,12 @@ let rec consistDir (fs:FileSystem) (dirName:string) : bool =
   | _::tl -> consistDir tl dirName
   | [] -> false
 
+let rec consistFile (fs:FileSystem) (fileName:string) : bool = 
+  match fs with
+  | File(file, _)::_ when compare file fileName -> true
+  | _::tl -> consistFile tl fileName
+  | [] -> false 
+
 // 1. Define a function
 // createEmptyFilesystem: unit -> FileSystem
 // that will be a function with 0 arguments that will return an
@@ -68,6 +74,27 @@ let rec createDirectory (path : string list) (fs : FileSystem) : FileSystem =
 // createFile is expected to fail with exception (failwith) if the directory
 // where the file is to be created does not exist.
 // (Permissions are initially assumed to be Read and Write, check task 5) 
+
+let rec createFile (path : string list) (fs : FileSystem) : FileSystem =
+    match path with
+    | [fileName] when not (consistFile fs fileName) ->
+      File(fileName, set [Read; Write])::fs
+    | main :: rest when (consistDir fs main) -> 
+      match fs with
+      | Dir(dirName, perm, fileSystem)::otherFs when compare dirName main ->
+        if perm.Contains Traverse then
+          if rest.Length = 1 then
+            if perm.Contains Write then
+              Dir(dirName, perm, createFile rest fileSystem)::otherFs
+            else
+              failwith ("Directory " + dirName + " does not have Write permission")
+          else
+            Dir(dirName, perm, createFile rest fileSystem)::otherFs
+        else
+          failwith ("Directory " + dirName + " does not have Traverse permission")
+      | hd::otherFs -> hd::createFile path otherFs
+      | [] -> failwith ("Could not find given " + path.ToString() + " in file system")
+    | _ -> failwith ("Could not find given " + path.ToString() + " in file system")
 
 // 3. Define a function
 // countFiles : FileSystem -> int
