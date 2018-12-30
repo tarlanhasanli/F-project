@@ -1,3 +1,9 @@
+type Permission = Read | Write | Execute | Traverse
+
+type FileSystem = Element list
+and Element = | File of string * Permission Set
+              | Dir of string * Permission Set * FileSystem
+
 // 1. Define a function
 // createEmptyFilesystem: unit -> FileSystem
 // that will be a function with 0 arguments that will return an
@@ -6,6 +12,8 @@
 // the root directory, check task 5)  
 // We assume that your file system is defined in a type called FileSystem.
 // Please note that you will later be asked to extend the type 
+
+let createEmptyFilesystem () : FileSystem = []
 
 // 2. Define a function 
 // createDirectory : string list -> FileSystem -> FileSystem
