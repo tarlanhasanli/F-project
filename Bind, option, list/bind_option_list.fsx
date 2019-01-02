@@ -35,11 +35,25 @@
       fm v1;...;fm vn]
 *)
 
+let applyO (mf : ('a -> 'b) option) (ma : 'a option) : 'b option = 
+  mf |> Option.bind (fun x -> ma |> Option.map x)
+
+let applyL (mf : ('a -> 'b) list) (ma : 'a list ) : 'b list= 
+  mf |> List.collect (fun x -> ma |> List.map x)
+
 (*
    Whenever we have a value of type 'a we can view it as an optional
    value that "is there" or a non-deterministic value which happens to
    have exactly one possibility.
 *)
+
+let pureO a = Some a
+
+let pureL a = [a]
+
+// Here is a more compact infix notation for the two apply operations
+let (<?>) mf ma = applyO mf ma
+let (<*>) mf ma = applyL mf ma
 
 (*
    Question 2
