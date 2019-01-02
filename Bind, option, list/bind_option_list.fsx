@@ -124,6 +124,8 @@ let rec sequenceL xs =
    roll 6 should evaluate to [1;2;3;4;5;6]
 *)
 
+let roll n = [1..n]
+
 (*
    Question 5
 
@@ -140,6 +142,8 @@ let rec sequenceL xs =
 
    The <*> operation may be useful here.
 *)
+
+let rollTwo m n = [fun x y -> x , y] <*> [1..m] <*> [1..n]
 
 (*
    Question 6
@@ -169,6 +173,10 @@ let rec sequenceL xs =
    each 'a in the input list and then collect the results.
 *)
 
+let rollTwo' n = 
+  ([fun x y -> x, y] <*> [1..n] <*> [1..n]) |> 
+    List.filter (fun (x, y) -> y <= x)
+
 (*
    Question 7
 
@@ -190,6 +198,10 @@ let rec sequenceL xs =
 
    The function sequenceL may be useful here.
 *)
+
+let rec rollN ds = 
+  let xs = List.map(fun x -> roll x) ds
+  List.foldBack (fun a acc -> (pureL cons) <*> a <*> acc) xs (pureL [])
 
 (*
    Question 8
