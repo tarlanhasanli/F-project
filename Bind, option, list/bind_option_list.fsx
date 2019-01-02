@@ -77,6 +77,10 @@ let (<*>) mf ma = applyL mf ma
    Use <?> and pureO to keep your code compact.
 *)
 
+let cons x xs = x :: xs
+let sequenceO xs = 
+    List.foldBack (fun a acc -> (pureO cons) <?> a <?> acc) xs (pureO [])
+
 (*
    Question 3
 
@@ -102,6 +106,9 @@ let (<*>) mf ma = applyL mf ma
 
    [[1; 3]; [1; 4]; [2; 3]; [2; 4]]   
 *)
+
+let rec sequenceL xs = 
+  List.foldBack (fun a acc -> (pureL cons) <*> a <*> acc) xs (pureL [])
 
 (*
    Question 4
