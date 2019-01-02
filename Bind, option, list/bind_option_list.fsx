@@ -216,3 +216,7 @@ let rec rollN ds =
    the predicate g.
 *)
 
+let conditional (f:'a -> bool) (g:'a -> bool) (xs:'a list) : (int * int) = 
+  let n = xs |> List.filter g |> List.length
+  let m = xs |> List.filter g |> List.filter f |> List.length
+  m, n
