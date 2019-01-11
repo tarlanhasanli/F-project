@@ -30,4 +30,10 @@ module FileSystem =
         | hd::tl, Node ((name, tree) :: rest) when hd = name -> Node ((name, (createDir tl tree)) :: rest)
         | _, Node (k :: rest) -> Node (k :: treeToList (createDir p (Node rest)))
     
-    let rec delete (p : string list) (fs : FsTree) = failwith "not implemented"
+    let rec delete (p : string list) (fs : FsTree) = 
+        match p, fs with
+        | [], _ | _, Node [] -> fs
+        | [nodeName], _ when contains nodeName fs = false -> fs
+        | [nodeName], Node ((name, _)::rest) when nodeName = name -> Node rest
+        | hd::tl, Node ((name, tree) :: rest) when hd = name -> Node ((name, (delete tl tree)) :: rest)
+        | _, Node (k :: rest) -> Node (k :: treeToList (delete p (Node rest)))
