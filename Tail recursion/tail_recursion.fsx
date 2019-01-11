@@ -1,6 +1,4 @@
 (*
-  Task 1:
-
   Write a function
   satisfiesPInList : (float -> float -> bool) -> (float * float) list -> float * float
   that returns the first element in list passed as the second argument of the
@@ -16,8 +14,6 @@ let rec satisfiesPInList xs x =
   | [] -> failwith "no match"
 
 (*
-  Task 2:
-
   Write a function
   createPairsOfList : 'a -> 'a list -> ('a * 'a) list
   that takes a list of 'a-s and returns a list of pairs of 'a-s that are taken
@@ -27,9 +23,15 @@ let rec satisfiesPInList xs x =
   Make sure your implementation uses explicit tail recursion.
 *)
 
-(*
-  Task 3:
+let createPairsOfList (x:'a) (y:'a list) : ('a * 'a) list =
+  let rec dummy list pairList = 
+    match list with
+    | [] -> pairList
+    | [hd] -> dummy [] ((hd, x)::pairList)
+    | hd::hd2::tl -> dummy tl ((hd, hd2)::pairList)
+  (dummy y []) |> List.rev
 
+(*
   Write a function
   createPairsOfListFold : 'a -> 'a list -> ('a * 'a) list
   that takes a list of 'a-s and returns a list of pairs of 'a-s that are taken
