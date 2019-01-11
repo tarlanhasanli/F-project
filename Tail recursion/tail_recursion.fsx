@@ -9,6 +9,12 @@
   Make sure your implementation uses explicit tail recursion.
 *)
 
+let rec satisfiesPInList xs x = 
+  match x with
+  | (a, b)::_ when xs a b -> a, b
+  | _::tl -> satisfiesPInList xs tl 
+  | [] -> failwith "no match"
+
 (*
   Task 2:
 
