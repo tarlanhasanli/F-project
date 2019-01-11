@@ -41,10 +41,17 @@ let createPairsOfList (x:'a) (y:'a list) : ('a * 'a) list =
   Make sure your implementation uses List.fold or List.foldBack appropriately.
   Test yourself if this implementation appears to be tail recursive.
 *)
+
+let createPairsOfListFold x y =
+  let i = List.length y - 1
+  let a, b = List.fold(fun ((a, k), acc) elem -> 
+    match k with
+    | Some t -> ((a+2, None), (t, elem)::acc)
+    | None when i = a -> ((a+2, None), (elem, x)::acc)
+    | None -> ((a, Some elem), acc) ) ((0, None), []) y
+  b |> List.rev
   
 (*
-  Task 4:
-
   Below you find the definition of a type Tree of leaf-labeled trees. Write a
   function medianInTree : float Tree -> float that returns the median label in the
   given tree, i.e. the difference in counts of elements to the right and left is
