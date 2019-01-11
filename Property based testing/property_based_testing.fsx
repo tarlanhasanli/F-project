@@ -127,6 +127,8 @@ let deleteIsWellFormed p fs = fsTreeWf (FileSystem.delete p fs)
    the given fs if p already exists (as a directory) in fs.
 *)
 
+let createDirExists p fs = fsTreeWf (FileSystem.createDir p fs)
+
 (*
    Define an FsCheck property
 
