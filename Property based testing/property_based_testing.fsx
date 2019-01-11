@@ -1,3 +1,10 @@
+#if INTERACTIVE 
+#r    "FsCheck.dll"
+#load "FileSystem.fs"
+#endif
+
+open FsCheck
+open FileSystem
 (*
    Define predicates
 
@@ -17,6 +24,19 @@
    It is peculiar since there is no difference between files and direcotries,
    everything is a node.
 *)
+
+let isEmpty l = List.contains "" l
+
+let fsTreeWf x = 
+   let rec checkListList ll = 
+      match ll with
+      | hd::tl when isEmpty hd || List.contains hd tl -> false
+      | _::tl -> checkListList tl
+      | _ -> true 
+   x |> FileSystem.show |> checkListList
+
+let pathWf x = x |> isEmpty |> not
+
 
 (*
    Define a FsCheck property
