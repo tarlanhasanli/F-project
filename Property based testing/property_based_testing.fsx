@@ -52,6 +52,8 @@ let pathWf x = x |> isEmpty |> not
    the amount of test inputs that trivially satisfy this property.
 *)
 
+let createDirWf x y = fsTreeWf y ==> fsTreeWf (FileSystem.createDir x y)
+
 (*
    Define a generator
 
@@ -87,6 +89,8 @@ let pathWf x = x |> isEmpty |> not
    The correct behaviour of delete is that if p is not present in fs
    then fs is returned as is.   
 *)
+
+let deleteIsWellFormed p fs = fsTreeWf (FileSystem.delete p fs)
 
 (*
    Define an FsCheck property
