@@ -73,6 +73,22 @@ let createDirWf x y = fsTreeWf y ==> fsTreeWf (FileSystem.createDir x y)
    the generated data indeed is well-formed.
 *)
 
+let genStr = Arb.generate<string> |> Gen.where(fun x -> x <> "") 
+
+let wfTree = 
+   let rec sizedTreeGen size =
+      match size with
+      | 0 -> Gen.map (fun left -> Node [left, Node[]]) genStr
+      | _ -> Gen.map2 (fun left right -> Node [left,right]) genStr (sizedTreeGen (size / 2))
+   Gen.sized sizedTreeGen
+
+let wfPath = 
+   let rec sizedListGen size =
+      match size with
+      | 0 -> Gen.map (fun x -> [x]) genStr     
+      | _ -> Gen.map2 (fun x y -> x::y) genStr (sizedListGen (size - 1))
+   Gen.sized sizedListGen
+
 (*
    Define an FsCheck property
 
