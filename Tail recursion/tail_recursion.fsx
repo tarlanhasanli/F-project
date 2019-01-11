@@ -60,3 +60,18 @@ let createPairsOfListFold x y =
   Use continuation-passing style in your implementation.
 *)
 
+type 'a Tree =
+  | Leaf   of 'a
+  | Branch of 'a Tree * 'a Tree
+
+let medianInTree x = 
+  let rec inOrder x c = 
+    match x with
+    | Leaf a -> c [a]
+    | Branch (tl, tr) -> inOrder tl (fun vl -> vl@(inOrder tr (fun vr -> c vr))) 
+
+  let midList list = 
+    let mid = int (floor (float (List.length list - 1) / 2.))
+    list.[mid]
+
+  midList(inOrder x id)
