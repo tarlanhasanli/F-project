@@ -167,3 +167,9 @@ let deleteDeletes fs =
 
    gives a filesystem which still contains p2.
 *)
+
+let containsPath p fs = List.contains p (FileSystem.show fs)
+
+let createAndDelete fs p1 p2 = 
+   let b = FileSystem.createDir p2 (FileSystem.createDir p1 fs)
+   containsPath p2 b ==> containsPath p2 (FileSystem.delete p1 b)
