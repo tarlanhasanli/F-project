@@ -141,6 +141,13 @@ let createDirExists p fs = fsTreeWf (FileSystem.createDir p fs)
    
 *)
 
+let deleteDeletes fs = 
+   let rec deleteAll fs list = 
+      match list with
+      | hd::tl -> deleteAll (FileSystem.delete hd fs) tl
+      | [] -> fs = Node []
+   fs |> FileSystem.show |> deleteAll fs
+
 (*
    Define an FsCheck property
 
