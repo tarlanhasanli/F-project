@@ -28,7 +28,7 @@ let noEmptyCells x =
 
 
 let filterGreaterThan n y = 
-    y |> noEmptyCells |> List.filter(fun e ->
+    y |> List.filter(fun e ->
     match e with 
     | Value v when v > n              -> true
     | Pair (x, y) when x > n || y > n -> true

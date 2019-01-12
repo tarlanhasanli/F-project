@@ -1,8 +1,4 @@
-// 1. Associate an identifier "myFirstList" with an empty list of booleans.
-
-let myFirstList = [] : bool list
-
-// 2. Define a function
+// Define a function
 //
 // elem : int -> 'a list -> 'a
 //
@@ -20,18 +16,25 @@ let myFirstList = [] : bool list
 // When you have completed this definition then think about the time complexity
 // of your implementation.
 
-let rec elem i xs =
+let elem (i:int) (xs:'a list) : 'a =
     if i < 0 then failwith "index cannot be less than 0"
-    else 
-        match xs with
-        | []           -> failwith "index out of bound"
-        | head :: tail -> 
-            if i = 0 then head
-            else elem (i - 1) tail
+    else
+        let rec findElem (i:int) (xs:'a list) : 'a = 
+            match i, xs with
+            | 0, _  -> List.head xs
+            | _, [] -> failwith "index out of bound"
+            | _, _  -> findElem (i-1) (List.tail xs)
+        findElem i xs
 
 // Here is a type synonym for a tuple for representing information about artists.
 
 type Artist = (string * int * bool * string)
+
+let name ((x,_,_,_) : Artist) = x
+let isAlive ((_,x,_,_) : Artist) = x
+let year ((_,x,_,_) : Artist) = x
+let country ((_,_,_,x) : Artist) = x
+
 
 // The components of the tuple are:
 // * name of the artist
@@ -40,7 +43,7 @@ type Artist = (string * int * bool * string)
 // * country of birth
 
 
-// 3. Define a list
+// Define a list
 //
 // artists : Artist list
 //
@@ -55,7 +58,7 @@ let artists = [("Eminem", 1972, true, "USA");
           ("50 Cent", 1975, true, "USA");
           ("Drake", 1986, true, "Canada")] : Artist list
 
-// 4. Define a function
+// Define a function
 //
 // bornLaterThan : int -> Artist list -> Artist list
 //
@@ -67,18 +70,13 @@ let artists = [("Eminem", 1972, true, "USA");
 //
 // The function must preserve duplicates.
 
-let year (_,year,_,_) = year
-
-let rec bornLaterThan y (xs:Artist list) =
+let rec bornLaterThan (y:int) (xs:Artist list) : Artist list =
     match xs with
-        | []           -> []
-        | head :: tail -> 
-            if (year head) > y then
-                head :: bornLaterThan y tail
-            else
-                bornLaterThan y tail
+    | []                                -> []
+    | head :: tail when (year head) > y -> head :: bornLaterThan y tail
+    | _ :: tail                         -> bornLaterThan y tail
 
-// 5. Define a function
+// Define a function
 //                        
 // artistsFrom : string -> Artist list -> Artist list
 //                        
@@ -90,18 +88,13 @@ let rec bornLaterThan y (xs:Artist list) =
 //
 // The function must preserve duplicates.
 
-let country (_,_,_,country) = country
-
-let rec artistsFrom c (xs:Artist list) =
+let rec artistsFrom (c:string) (xs:Artist list) : Artist list =
     match xs with
-        | []           -> []
-        | head :: tail -> 
-            if (country head) = c then
-                head :: artistsFrom c tail
-            else
-                artistsFrom c tail
+    | []                                   -> []
+    | head :: tail when (country head) = c -> head :: artistsFrom c tail
+    | _::tail                              -> artistsFrom c tail
 
-// 6. Define a function
+// Define a function
 //                          
 // names : Artist list -> string list
 //                          
@@ -112,14 +105,12 @@ let rec artistsFrom c (xs:Artist list) =
 // The element at index i in 'names xs' must be the name of the
 // artist at index i in 'xs'.
 
-let name (name,_,_,_) = name
-
-let rec names (xs:Artist list) =
+let rec names (xs:Artist list) : string list =
     match xs with
-        | []           -> [] : string list
-        | head :: tail -> name head :: names tail
+    | []           -> []
+    | head :: tail -> name head :: names tail
 
-// 7. Using your solutions to previous exercises define a function
+// Using your solutions to previous exercises define a function
 //    
 // areFromAndBornLaterThan : string -> int -> Artist list -> string list
 //    
@@ -128,4 +119,5 @@ let rec names (xs:Artist list) =
 //
 // This should be a one-line definition.
 
-let areFromAndBornLaterThan c y xs = artistsFrom c xs |> bornLaterThan y |> names
+let areFromAndBornLaterThan (c:string) (y:int) (xs:Artist list) : string list = 
+    xs |> artistsFrom c |> bornLaterThan y |> names

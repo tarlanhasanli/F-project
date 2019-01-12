@@ -200,7 +200,7 @@ let rollTwo' n =
 *)
 
 let rec rollN ds = 
-  let xs = List.map(fun x -> roll x) ds
+  let xs = List.map roll ds
   List.foldBack (fun a acc -> (pureL cons) <*> a <*> acc) xs (pureL [])
 
 (*

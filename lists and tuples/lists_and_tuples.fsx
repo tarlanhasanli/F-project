@@ -9,6 +9,11 @@
 
 type BibliographyItem = string list * string * (int * int) * int
 
+let author (x,_,_,_) = x
+let title (_,x,_,_) = x
+let page (_,_,x,_) = x
+let year (_,_,_,x) = x
+
 // 2. Create a value bibliographyData : BibliographyItem list that contains
 // at least 7 different publications on your favourite topic from https://dblp.uni-trier.de/ 
 // Please note that you need not read the papers, just pick 7 papers that sound interesting to you from the database.
@@ -31,12 +36,13 @@ let bibliographyData = [(["Peter, Tolstrup Aagesen"; "Clint, Heyer"],"Personalit
 // A missing author can be considered to be equivalent to an empty string.
 // Please note that your implementation should be recursive over the input lists.
 
-let rec compareLists (first:string list) (second:string list) =
+let rec compareLists (first:string list) (second:string list) : int =
     match first, second with
     | [], [] -> 0
     | [], _  -> -1
     | _, []  -> 1
-    | hf::tf, hs::ts -> match compare hf hs with
+    | hf::tf, hs::ts -> 
+        match compare hf hs with
         | t when t > 0 -> 1
         | 0 -> compareLists tf ts
         | _ -> -1
@@ -46,9 +52,7 @@ let rec compareLists (first:string list) (second:string list) =
 // that takes two instances of bibliography items and compares them according to the authors.
 // Use solution from task 3.
 
-let author (a,_,_,_) = a
-
-let compareAuthors (x:BibliographyItem) (y:BibliographyItem) = 
+let compareAuthors (x:BibliographyItem) (y:BibliographyItem) : int = 
     compareLists (author x) (author y)
 
 // 5. Make a function
@@ -56,56 +60,47 @@ let compareAuthors (x:BibliographyItem) (y:BibliographyItem) =
 // that takes two instances of bibliography items and compares them according to the authors 
 // and if the authors are the same then according to years.
 
-let year (_,_,_,y) = y
-
-let compareAuthorsYears (x:BibliographyItem) (y:BibliographyItem) = 
+let compareAuthorsYears (x:BibliographyItem) (y:BibliographyItem) : int = 
     let res = compareAuthors x y 
-    if res = 0 then 
-        if year x < year y then
-            -1
-        else 
-            if year x > year y then
-                1
-            else 
-            0
-    else res
+
+    match res with
+    | t when t <> 0 -> res
+    | _ -> year x - year y
 
 // 6. Make a function 
 // sortBibliographyByYear : BibliographyItem list -> BibliographyItem list
 // That returns a bibliography sorted according to the year in ascending order
 
-let sortBibliographyByYear (x:BibliographyItem list) =
-    x |> List.sortBy(fun e -> year e)
+let sortBibliographyByYear (x:BibliographyItem list) : BibliographyItem list =
+    List.sortBy year x
 
 // 7. Make a function 
 // sortBibliographyByAuthorYear : BibliographyItem list -> BibliographyItem list
 // That returns a bibliography sorted according to the authors and year in ascending order
 
-let sortBibliographyByAuthor (x:BibliographyItem list) =
-    x |> List.sortBy(fun e -> author e)
-
-let sortBibliographyByAuthorYear (x:BibliographyItem list) =
-    x |> sortBibliographyByYear |> sortBibliographyByAuthor
+let sortBibliographyByAuthorYear (x:BibliographyItem list) : BibliographyItem list =
+    x |> sortBibliographyByYear |> List.sortBy author
 
 // 8. Make a function
 // groupByAuthor : BibliographyItem list -> (string * BibliographyItem list) list
 // where the return list contains pairs where the first element is the name of a single
 // author and the second element a list of bibliography items that the author has co-authored.
 
-let rec uniqueAuthor (x:BibliographyItem list) = 
-    let authors = match x with
-    | [] -> []
-    | hd::tl -> (author hd)@(uniqueAuthor tl)
-    authors |> Seq.distinct |> List.ofSeq // this part from https://bit.ly/2zFQkE0
+let rec uniqueAuthor (x:BibliographyItem list) : string list = 
+    let authors = 
+        match x with
+        | [] -> []
+        | hd::tl -> (author hd)@(uniqueAuthor tl)
+    authors |> Seq.distinct |> List.ofSeq 
 
-let rec getAuthorBibliography (x:BibliographyItem list) (y:string) =
-    x |> List.filter(fun e -> List.contains y (author e) = true)
+let rec getAuthorBibliography (x:BibliographyItem list) (y:string) : BibliographyItem list =
+    x |> List.filter(fun e -> e |> author |> List.contains y)
 
-let rec zip (xs:string list) (x:BibliographyItem list) =
+let rec zip (xs:string list) (x:BibliographyItem list) : (string * BibliographyItem list) list =
    match xs with
    | [] -> []
    | hd :: tl -> (hd, (getAuthorBibliography x hd)) :: zip tl x
     
-let groupByAuthor (x:BibliographyItem list) =
+let groupByAuthor (x:BibliographyItem list) : (string * BibliographyItem list) list =
     let authors = uniqueAuthor x
     zip authors x
