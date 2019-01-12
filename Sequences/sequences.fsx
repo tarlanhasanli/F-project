@@ -12,6 +12,10 @@
   
 *)
 
+let sequenceUsing (len:int) (foo:int->int) (first:int) : seq<int> =
+    let rec loop (foo:int->int) (res:int) = 
+        seq { yield foo res; yield! loop foo (foo res) }
+    first |> loop foo |> Seq.take len
 
 (*
   Define a function returning a sequence
