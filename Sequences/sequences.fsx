@@ -83,4 +83,26 @@ let cacheObserver (s:seq<'a>) : seq<'a> =
 
 *)
 
-  
+type ReaderBuilder () =
+    member this.Bind   (reader, f) = fun env -> f (reader env) env
+    member this.Return x           = fun _   -> x
+
+let reader = new ReaderBuilder ()
+
+let ask = id
+
+let runReader = (<|)
+
+type Expr =
+  | Const  of int          // constant
+  | Ident  of string       // identifier
+  | Neg    of Expr         // unary negation, e.g. -1
+  | Sum    of Expr * Expr  // sum 
+  | Diff   of Expr * Expr  // difference
+  | Prod   of Expr * Expr  // product
+  | Div    of Expr * Expr  // division
+  | DivRem of Expr * Expr  // division remainder as in 1 % 2 = 1
+  | Let    of string * Expr * Expr // let expression, the string is the identifier.
+
+let d m k v =
+  m |> Map.add(k,v)
