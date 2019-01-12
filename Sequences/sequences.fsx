@@ -1,3 +1,4 @@
+open System.Collections.Generic
 (*
   Define a function returning a sequence
   
@@ -41,6 +42,14 @@ let pseudoRandom (seed:int) (s:seq<int>) : seq<int> =
   to standard output every time the value requested from the sequence is actually cached.
 *)
 
+let cacheObserver (s:seq<'a>) : seq<'a> = 
+    let cache = Dictionary<_, _>()
+    seq {for i in s do
+            match cache.TryGetValue i with
+            | true, v -> printfn v
+            | _ -> cache.Add(i ,"Cached")
+            yield i
+      }
 
 (*
   A function from a type 'env to a type 'a can be seen as a computation that
