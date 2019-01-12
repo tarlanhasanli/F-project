@@ -7,13 +7,10 @@
   * the length of the sequence is defined by the first argument;
   * the sequence is computed based on the function give as the second argument, and
   * the first element is computed by applying the function given in the second argument to the initial value given as the third argument.
-
-  E.g. sequenceUsing 2 ((+) 1) 0 should generate a sequence containing the elements 1 and 2.
-  
 *)
 
 let sequenceUsing (len:int) (foo:int->int) (first:int) : seq<int> =
-    let rec loop (foo:int->int) (res:int) = 
+    let rec loop (foo:int->int) (res:int) : seq<int> = 
         seq { yield foo res; yield! loop foo (foo res) }
     first |> loop foo |> Seq.take len
 
@@ -25,14 +22,15 @@ let sequenceUsing (len:int) (foo:int->int) (first:int) : seq<int> =
   that generates pseudo random numbers based on the first argument as seed and 
   second argument as an infinite sequence of values of int type.
 
-  Use the above sequence nat defined in lecture11.fsx as input for testing. 
-
   Use the built in hash function to combine the seed and input integers.
   Experiment with ways how to combine the seed and input value in such a way 
   that the order of the values in the output sequence differs from that of the input
   sequence.
-  
 *)
+
+let pseudoRandom (seed:int) (s:seq<int>) : seq<int> =
+    let rand = System.Random()
+    seq {for i in s -> rand.Next(hash(seed, i))}
 
 (*
   Define a function
